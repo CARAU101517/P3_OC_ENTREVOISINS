@@ -1,5 +1,7 @@
 package com.openclassrooms.entrevoisins.ui.neighbour_list;
 
+import android.content.Intent;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,9 +23,17 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static android.app.Activity.RESULT_OK;
+
 public class MyNeighbourRecyclerViewAdapter extends RecyclerView.Adapter<MyNeighbourRecyclerViewAdapter.ViewHolder> {
 
+
+
     private final List<Neighbour> mNeighbours;
+    public static final int FAVORITE_BTN_IS_CLICKED_REQUEST_CODE = 1;
+
+
+
 
     public MyNeighbourRecyclerViewAdapter(List<Neighbour> items) {
         mNeighbours = items;
@@ -51,6 +61,19 @@ public class MyNeighbourRecyclerViewAdapter extends RecyclerView.Adapter<MyNeigh
                 EventBus.getDefault().post(new DeleteNeighbourEvent(neighbour));
             }
         });
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                NeighbourProfileActivity.openNeighbourProfile((FragmentActivity) view.getContext(),neighbour);
+            }
+        });
+
+        }
+
+    protected void OnActivityResult(int requestCode, int resultCode, Intent data) {
+        if (FAVORITE_BTN_IS_CLICKED_REQUEST_CODE == requestCode && RESULT_OK == resultCode );
     }
 
     @Override
