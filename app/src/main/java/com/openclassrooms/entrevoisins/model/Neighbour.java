@@ -28,6 +28,11 @@ public class Neighbour implements Parcelable {
     /** About me */
     private String aboutMe;
 
+
+
+    private boolean isFavorite;
+
+
     /**
      * Constructor
      * @param id
@@ -44,13 +49,18 @@ public class Neighbour implements Parcelable {
         this.aboutMe = aboutMe;
     }
 
-    public Neighbour(Parcel in) {
+    public Neighbour() {
+
+    }
+
+    protected Neighbour(Parcel in) {
         id = in.readLong();
-        avatarUrl = in.readString();
         name = in.readString();
-        phoneNumber = in.readString();
+        avatarUrl = in.readString();
         address = in.readString();
+        phoneNumber = in.readString();
         aboutMe = in.readString();
+        isFavorite = in.readByte() != 0;
     }
 
     public static final Creator<Neighbour> CREATOR = new Creator<Neighbour>() {
@@ -64,10 +74,6 @@ public class Neighbour implements Parcelable {
             return new Neighbour[size];
         }
     };
-
-    public Neighbour() {
-
-    }
 
     public long getId() {
         return id;
@@ -117,6 +123,14 @@ public class Neighbour implements Parcelable {
         this.aboutMe = aboutMe;
     }
 
+    public boolean isFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        isFavorite = favorite;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -138,10 +152,12 @@ public class Neighbour implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(id);
-        dest.writeString(avatarUrl);
         dest.writeString(name);
-        dest.writeString(phoneNumber);
+        dest.writeString(avatarUrl);
         dest.writeString(address);
+        dest.writeString(phoneNumber);
         dest.writeString(aboutMe);
+        dest.writeByte((byte) (isFavorite ? 1 : 0));
     }
 }
+

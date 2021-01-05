@@ -2,8 +2,7 @@ package com.openclassrooms.entrevoisins.ui.neighbour_list;
 
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
+import android.content.SharedPreferences;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
@@ -19,9 +18,6 @@ import com.bumptech.glide.request.RequestOptions;
 import com.openclassrooms.entrevoisins.R;
 import com.openclassrooms.entrevoisins.model.Neighbour;
 
-import static android.net.Uri.parse;
-import static java.lang.Integer.*;
-
 public class NeighbourProfileActivity extends AppCompatActivity {
 
     public ImageView mAvatar;
@@ -30,23 +26,29 @@ public class NeighbourProfileActivity extends AppCompatActivity {
     public TextView mPhoneNumber;
     public TextView mAddress;
     public TextView mAboutMe;
-
+    private SharedPreferences mPreferences;
+    private Neighbour neighbourProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_neighbour_profile);
 
+        mPreferences = getPreferences(MODE_PRIVATE);
+
         Intent neighbourProfileActivityIntent = getIntent();
-        Neighbour neighbourProfile = neighbourProfileActivityIntent.getParcelableExtra("neighbourProfile");
+        neighbourProfile = neighbourProfileActivityIntent.getParcelableExtra("neighbourProfile");
 
         String avatarUrl = "";
-        if (neighbourProfile != null)
-            avatarUrl = neighbourProfile.getAvatarUrl();
         mAvatar = findViewById(R.id.avatarUrl);
-        mAvatar.setImageURI(Uri.parse(avatarUrl));
+        avatarUrl = neighbourProfile.getAvatarUrl();
+        if (neighbourProfile != null)
+        Glide.with(this)
+                .load(avatarUrl)
+                .timeout(60000)
+                .into(mAvatar);
 
-        String name = "";
+               String name = "";
         if (neighbourProfile != null)
             name = neighbourProfile.getName();
         mName = findViewById(R.id.name);
@@ -72,15 +74,29 @@ public class NeighbourProfileActivity extends AppCompatActivity {
 
 
         mFavoriteButton = findViewById(R.id.item_favorite_button);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         mFavoriteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent();
-                if (mFavoriteButton != null)
-                    setResult(RESULT_OK, intent);
-                finish();
+               boolean isFavorite = readStatus();
+               if (isFavorite) {
+                   mFavoriteButton.setImageResource(R.drawable.ic_star_border_white_24dp);
+                   saveStatus(false);
+                   neighbourProfile.setFavorite(false);
+               }
+               else {
+                   mFavoriteButton.setImageResource(R.drawable.ic_star_white_24dp);
+                   saveStatus(true);
+                   neighbourProfile.setFavorite(true);
+               }
+
+            }
+
+            private boolean readStatus() {
+                return mPreferences.getBoolean("Status", true);
+            }
+
+            private void saveStatus(boolean isFavorite) {
+                mPreferences.edit().putBoolean("Status", isFavorite).commit();
             }
         });
 
@@ -89,7 +105,7 @@ public class NeighbourProfileActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case android.R.id.home: {
+            case android.R.id.home : {
                 finish();
                 return true;
             }

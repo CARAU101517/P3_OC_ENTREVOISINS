@@ -7,9 +7,8 @@
     tools:context=".ui.neighbour_list.NeighbourProfileActivity">
 
     <LinearLayout
-        android:layout_width="362dp"
+        android:layout_width="match_parent"
         android:layout_height="712dp"
-        android:layout_marginStart="32dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -19,9 +18,9 @@
 
         <ImageView
             android:id="@+id/avatarUrl"
-            android:layout_width="362dp"
-            android:layout_height="215dp"
-            android:layout_gravity="center_horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="225dp"
+            android:scaleType="centerCrop"
             android:layout_marginTop="20dp" />
 
         <android.support.design.widget.FloatingActionButton
@@ -36,29 +35,36 @@
 
         <TextView
             android:id="@+id/name"
+            android:textSize="50dp"
             android:layout_width="match_parent"
-            android:layout_height="34dp"
-            android:layout_marginTop="20dp"/>
+            android:layout_height="60dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="10dp"/>
 
         <TextView
             android:id="@+id/phoneNumber"
             android:layout_width="match_parent"
             android:layout_height="34dp"
-            android:layout_marginTop="20dp"/>
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="10dp"/>
 
 
         <TextView
             android:id="@+id/address"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_marginTop="20dp" />
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="10dp"/>
+
+
 
         <TextView
             android:id="@+id/aboutMe"
+            android:contentDescription="A propos de moi"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="20dp"
-            android:padding="@dimen/text_margin" />
+            android:layout_marginLeft="10dp"/>
 
     </LinearLayout>
 
