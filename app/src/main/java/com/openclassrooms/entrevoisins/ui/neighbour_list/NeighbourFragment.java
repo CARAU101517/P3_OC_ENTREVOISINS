@@ -31,14 +31,19 @@ public class NeighbourFragment extends Fragment {
     private NeighbourApiService mApiService;
     private List<Neighbour> mNeighbours;
     private RecyclerView mRecyclerView;
-
+    private Boolean mIsFavorite;
+    private static final String IS_FAVORITE_KEY = "isFavorite";
 
     /**
      * Create and return a new instance
      * @return @{@link NeighbourFragment}
      */
-    public static NeighbourFragment newInstance() {
+
+    public static NeighbourFragment newInstance(boolean isFavorite) {
         NeighbourFragment fragment = new NeighbourFragment();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(IS_FAVORITE_KEY, isFavorite);
+        fragment.setArguments(bundle);
         return fragment;
     }
 
@@ -46,6 +51,10 @@ public class NeighbourFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mApiService = DI.getNeighbourApiService();
+        Bundle bundle = this.getArguments();
+        if (bundle != null){
+            mIsFavorite = bundle.getBoolean(IS_FAVORITE_KEY);
+        }
     }
 
     @Override
@@ -63,7 +72,8 @@ public class NeighbourFragment extends Fragment {
      * Init the List of neighbours
      */
     private void initList() {
-        mNeighbours = mApiService.getNeighbours();
+        if (mIsFavorite) mNeighbours = mApiService.getFavoriteNeighbours();
+        else mNeighbours = mApiService.getNeighbours();
         mRecyclerView.setAdapter(new MyNeighbourRecyclerViewAdapter(mNeighbours));
     }
 

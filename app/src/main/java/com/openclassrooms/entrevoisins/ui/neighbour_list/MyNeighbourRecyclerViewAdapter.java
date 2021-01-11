@@ -1,6 +1,6 @@
 package com.openclassrooms.entrevoisins.ui.neighbour_list;
 
-import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -23,17 +23,11 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static android.app.Activity.RESULT_OK;
+import static android.content.Context.MODE_PRIVATE;
 
 public class MyNeighbourRecyclerViewAdapter extends RecyclerView.Adapter<MyNeighbourRecyclerViewAdapter.ViewHolder> {
 
-
-
     private final List<Neighbour> mNeighbours;
-    public static final int FAVORITE_BTN_IS_CLICKED_REQUEST_CODE = 1;
-
-
-
 
     public MyNeighbourRecyclerViewAdapter(List<Neighbour> items) {
         mNeighbours = items;
@@ -56,6 +50,7 @@ public class MyNeighbourRecyclerViewAdapter extends RecyclerView.Adapter<MyNeigh
                 .into(holder.mNeighbourAvatar);
 
         holder.mDeleteButton.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 EventBus.getDefault().post(new DeleteNeighbourEvent(neighbour));
@@ -65,18 +60,12 @@ public class MyNeighbourRecyclerViewAdapter extends RecyclerView.Adapter<MyNeigh
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 NeighbourProfileActivity.openNeighbourProfile((FragmentActivity) view.getContext(),neighbour);
             }
         });
-
-        }
-
-    protected void OnActivityResult(int requestCode, int resultCode, Intent data) {
-        if (FAVORITE_BTN_IS_CLICKED_REQUEST_CODE == requestCode && RESULT_OK == resultCode );
     }
 
-    @Override
+        @Override
     public int getItemCount() {
         return mNeighbours.size();
     }

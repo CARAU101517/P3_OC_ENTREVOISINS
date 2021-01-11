@@ -20,51 +20,88 @@
             android:id="@+id/avatarUrl"
             android:layout_width="match_parent"
             android:layout_height="225dp"
-            android:scaleType="centerCrop"
-            android:layout_marginTop="20dp" />
+            android:scaleType="centerCrop"/>
+
+
+        <ImageButton
+            android:id="@+id/return_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="10dp"
+            android:src="?attr/actionModeCloseDrawable"
+            android:background="@android:color/transparent"/>
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/item_favorite_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/fab_margin"
             app:layout_anchor="@id/avatarUrl"
             app:layout_anchorGravity="bottom|end"
-            app:srcCompat="@drawable/ic_star_border_white_24dp"/>
+            app:srcCompat="@drawable/ic_star_border_white_24dp"
+            android:layout_marginRight="10dp"
+            android:layout_gravity="right"
+            android:layout_marginTop="5dp"/>
+
+        <TextView
+            android:id="@+id/nameTitle"
+            android:textSize="60dp"
+            android:textColor="#008000"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="80dp"/>
 
 
         <TextView
             android:id="@+id/name"
-            android:textSize="50dp"
+            android:textSize="40dp"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="10dp"/>
-
-        <TextView
-            android:id="@+id/phoneNumber"
-            android:layout_width="match_parent"
-            android:layout_height="34dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="10dp"/>
+            android:layout_height="50dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"/>
 
 
         <TextView
             android:id="@+id/address"
             android:layout_width="match_parent"
+            android:layout_height="34dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"/>
+
+        <TextView
+            android:id="@+id/phoneNumber"
+            android:layout_width="match_parent"
+            android:layout_height="34dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"/>
+
+        <TextView
+            android:id="@+id/à_propos_de_moi"
+            android:text="A propos de moi"
+            android:textSize="40dp"
+            android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="10dp"/>
-
-
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"/>
 
         <TextView
             android:id="@+id/aboutMe"
-            android:contentDescription="A propos de moi"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="10dp"/>
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"/>
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Button" />
 
     </LinearLayout>
 
