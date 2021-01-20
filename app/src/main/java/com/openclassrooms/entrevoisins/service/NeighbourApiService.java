@@ -35,7 +35,7 @@ public interface NeighbourApiService {
     void createNeighbour(Neighbour neighbour);
 
     /**
-     * modify a neighbour in neighbourList {@link List}
+     * modify a neighbour in neighbourList with the favorite status if so {@link List}
      * @param neighbour
      */
     void modifyNeighbour(Neighbour neighbour);
