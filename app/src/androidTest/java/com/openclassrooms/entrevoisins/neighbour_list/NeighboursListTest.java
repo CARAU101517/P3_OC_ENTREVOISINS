@@ -1,11 +1,14 @@
-
 package com.openclassrooms.entrevoisins.neighbour_list;
 
+import android.support.test.espresso.ViewInteraction;
 import android.support.test.espresso.contrib.RecyclerViewActions;
+import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewParent;
 
 import com.openclassrooms.entrevoisins.R;
 import com.openclassrooms.entrevoisins.model.Neighbour;
@@ -15,7 +18,10 @@ import com.openclassrooms.entrevoisins.ui.neighbour_list.ListNeighbourActivity;
 import com.openclassrooms.entrevoisins.ui.neighbour_list.NeighbourProfileActivity;
 import com.openclassrooms.entrevoisins.utils.DeleteViewAction;
 
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
+import org.hamcrest.TypeSafeMatcher;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -23,20 +29,33 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
-import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.Espresso.pressBack;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.swipeLeft;
 import static android.support.test.espresso.action.ViewActions.swipeRight;
+import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition;
+
+import static android.support.test.espresso.intent.Intents.intended;
+import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.matcher.ViewMatchers.assertThat;
 import static android.support.test.espresso.matcher.ViewMatchers.hasMinimumChildCount;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayingAtLeast;
+import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
+import static android.support.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static com.openclassrooms.entrevoisins.R.id.gone;
+import static com.openclassrooms.entrevoisins.R.id.item_list_delete_button;
+import static com.openclassrooms.entrevoisins.R.id.visible;
 import static com.openclassrooms.entrevoisins.utils.RecyclerViewItemCountAssertion.withItemCount;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.core.IsNull.notNullValue;
+import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertNotNull;
 
 
@@ -49,14 +68,14 @@ public class NeighboursListTest {
     // This is fixed
     private static int ITEMS_COUNT = 12;
     private ListNeighbourActivity mActivity;
-    private NeighbourApiService mApiService = new DummyNeighbourApiService();
-    private List<Neighbour> mNeighbours = mApiService.getFavoriteNeighbours();
-    private Neighbour neighbourProfile = new Neighbour();
-
 
     @Rule
     public ActivityTestRule<ListNeighbourActivity> mActivityRule =
             new ActivityTestRule(ListNeighbourActivity.class);
+
+    @Rule
+    public IntentsTestRule<NeighbourProfileActivity> myNeighbourTestRule = new IntentsTestRule<>(NeighbourProfileActivity.class);
+
 
     @Before
     public void setUp() {
@@ -70,7 +89,7 @@ public class NeighboursListTest {
     @Test
     public void myNeighboursList_shouldNotBeEmpty() {
         // First scroll to the position that needs to be matched and click on it.
-        onView(withId(R.id.list_neighbours))
+        onView(allOf(withId(R.id.list_neighbours), isDisplayingAtLeast(60)))
                 .check(matches(hasMinimumChildCount(1)));
     }
 
@@ -80,44 +99,81 @@ public class NeighboursListTest {
     @Test
     public void myNeighboursList_deleteAction_shouldRemoveItem() {
         // Given : We remove the element at position 2
-        onView(withId(R.id.list_neighbours)).check(withItemCount(ITEMS_COUNT));
+        onView(allOf(withId(R.id.list_neighbours), isDisplayingAtLeast(60))).check(withItemCount(ITEMS_COUNT));
         // When perform a click on a delete icon
-        onView(withId(R.id.list_neighbours))
+        onView(allOf(withId(R.id.list_neighbours), isDisplayingAtLeast(60)))
                 .perform(RecyclerViewActions.actionOnItemAtPosition(1, new DeleteViewAction()));
         // Then : the number of element is 11
-        onView(withId(R.id.list_neighbours)).check(withItemCount(ITEMS_COUNT-1));
+        onView(allOf(withId(R.id.list_neighbours), isDisplayingAtLeast(60))).check(withItemCount(ITEMS_COUNT-1));
     }
 
-    /**
-     * When we click an item, the Profile Page is launching
-     */
+    //When we click an item, the Profile Page is launching
+    @Test
+    public void checkIsNeighbourProfileActivityLaunched() {
+        // on clique sur le voisin caroline
+        onView(allOf(withId(R.id.list_neighbours), isDisplayingAtLeast(60)))
+            .perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
+        // on test que c'est l'activity MyNeighbourProfile qui est launched
+        intended(hasComponent(myNeighbourTestRule.getActivity().getComponentName()));
+    }
 
     @Test
-    public void LaunchOfNeighbourProfileActivity() {
-        // Given : When we click on an Item
-        onView(allOf(withId(R.id.list_neighbours), withText("My neighbours")))
+    public void WhenNeighbourProfileIsOpen_NameShouldNotBeEmptyAndCorrect() {
+        // Given : When we click on an Item position 0 (Caroline)
+        onView(allOf(withId(R.id.list_neighbours),isDisplayingAtLeast(60)))
                 .perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
-        // Then : The Profile Page is opening
-        onView(withId(R.id.avatarUrlProfile)).check(matches(isDisplayed()));
+        // Then : The Profile Page is opening and the name should not be empty and should be "Caroline"
+        onView(withId(R.id.name)).check(matches(notNullValue()));
+        onView(withId(R.id.name)).check(matches(withText("Caroline")));
     }
 
     @Test
-    public void WhenNeighbourProfileIsOpen_NameShouldNotBeEmpty() {
-        View view = mActivity.findViewById(R.id.name);
-        assertNotNull(view);
+    public void FavoriteNeighboursList_MustShowOnlyFavorites() {
+        onView(allOf(withId(R.id.list_neighbours), isDisplayingAtLeast(60)))
+            .perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
+        ViewInteraction floatingActionButton = onView(allOf(withId(R.id.item_favorite_button),
+                        childAtPosition(childAtPosition(withId(android.R.id.content), 0),3), isDisplayed()));
+        floatingActionButton.perform(click());
+        pressBack();
+
+        ViewInteraction recyclerView2 = onView(allOf(withId(R.id.list_neighbours), isDisplayingAtLeast(60)));
+        recyclerView2.perform(actionOnItemAtPosition(2, click()));
+        ViewInteraction floatingActionButton2 = onView(allOf(withId(R.id.item_favorite_button), childAtPosition(
+                        childAtPosition(withId(android.R.id.content), 0), 3), isDisplayed()));
+        floatingActionButton2.perform(click());
+        pressBack();
+
+        ViewInteraction tabView = onView(
+                allOf(withContentDescription("Favorites"), childAtPosition(
+                        childAtPosition(withId(R.id.tabs), 0), 1), isDisplayed()));
+        tabView.perform(click());
+
+        ViewInteraction viewPager = onView(allOf(withId(R.id.container), childAtPosition(allOf(withId(R.id.main_content),
+                        childAtPosition(withId(android.R.id.content), 0)), 1), isDisplayed()));
+        viewPager.perform(swipeLeft());
+
+        ViewInteraction recyclerView3 = onView(allOf(withId(R.id.list_neighbours), isDisplayingAtLeast(60)));
+        recyclerView3.check(withItemCount(2));
     }
 
-    @Test
-    public void MyFavoriteList_ShouldShows_OnlyFavorites() {
-        neighbourProfile.setFavorite(true);
-        // Given : we clear the favorites list We add 2 neighbours in the Favorites List
-        onView(withId(R.id.container)).perform((swipeRight()));
-        mNeighbours.clear();
-        // We add 5 neighbours in the Favorites List
-        onData(mApiService.modifyNeighbour(neighbourProfile))
-                .atPosition(0+2+4+6+8);
-        onView(withId(R.id.container)).perform((swipeRight()));
-        // Then : we check the number of favorites in the favorites list
-        onView(withId(R.id.list_neighbours)).check(withItemCount(ITEMS_COUNT=5));
+
+    private static Matcher<View> childAtPosition(
+            final Matcher<View> parentMatcher, final int position) {
+
+        return new TypeSafeMatcher<View>() {
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("Child at position " + position + " in parent ");
+                parentMatcher.describeTo(description);
+            }
+
+            @Override
+            public boolean matchesSafely(View view) {
+                ViewParent parent = view.getParent();
+                return parent instanceof ViewGroup && parentMatcher.matches(parent)
+                        && view.equals(((ViewGroup) parent).getChildAt(position));
+            }
+        };
     }
 }
+

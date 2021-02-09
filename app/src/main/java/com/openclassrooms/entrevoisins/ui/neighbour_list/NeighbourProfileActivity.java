@@ -2,11 +2,13 @@ package com.openclassrooms.entrevoisins.ui.neighbour_list;
 
 
 import android.content.Intent;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -38,6 +40,10 @@ public class NeighbourProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_neighbour_profile);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         mAvatar = findViewById(R.id.avatarUrlProfile);
         mFavoriteButton = findViewById(R.id.item_favorite_button);
@@ -62,18 +68,16 @@ public class NeighbourProfileActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (neighbourProfile.getFavorite()) {
                     mFavoriteButton.setImageResource(R.drawable.ic_baseline_star_yellow_border_24);
-                    //saveFavStatus(false);
+                    //saveFavStatus(false)= modifyNeighbour;;
                     neighbourProfile.setFavorite(false);
                 } else {
                     mFavoriteButton.setImageResource(R.drawable.ic_baseline_yellow_star_24);
-                    //saveFavStatus(true);
+                    //saveFavStatus(true) = modifyNeighbour;
                     neighbourProfile.setFavorite(true);
                 }
+                mApiService.modifyNeighbour(neighbourProfile);
             }
         });
-
-
-        mApiService.modifyNeighbour(neighbourProfile);
 
         }
 
@@ -126,9 +130,9 @@ public class NeighbourProfileActivity extends AppCompatActivity {
             }
 
             if (neighbourProfile.getFavorite()) {
-                mFavoriteButton.setImageResource(R.drawable.ic_star_white_24dp);
+                mFavoriteButton.setImageResource(R.drawable.ic_baseline_yellow_star_24);
             } else {
-                mFavoriteButton.setImageResource(R.drawable.ic_star_border_white_24dp);
+                mFavoriteButton.setImageResource(R.drawable.ic_baseline_star_yellow_border_24);
             }
         }
     }

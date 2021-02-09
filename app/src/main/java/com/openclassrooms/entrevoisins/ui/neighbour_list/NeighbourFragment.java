@@ -1,7 +1,6 @@
 package com.openclassrooms.entrevoisins.ui.neighbour_list;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
@@ -11,8 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
+
 
 import com.openclassrooms.entrevoisins.R;
 import com.openclassrooms.entrevoisins.di.DI;
@@ -25,17 +23,23 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.util.List;
 
+import butterknife.BindView;
 
-public class NeighbourFragment extends Fragment {
+
+public class
+NeighbourFragment extends Fragment {
 
     private NeighbourApiService mApiService;
     private List<Neighbour> mNeighbours;
     private RecyclerView mRecyclerView;
-    private Boolean favoriteList;
+    private Boolean favorites;
     private static final String FAVORITE_LIST_KEY = "isFavorite";
+    @BindView(R.id.item_list_delete_button)
+    public ImageButton mDeleteButton;
 
     /**
      * Create and return a new instance
+     *
      * @return @{@link NeighbourFragment}
      */
 
@@ -47,13 +51,14 @@ public class NeighbourFragment extends Fragment {
         return fragment;
     }
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mApiService = DI.getNeighbourApiService();
         Bundle bundle = this.getArguments();
-        if (bundle != null){
-            favoriteList = bundle.getBoolean(FAVORITE_LIST_KEY);
+        if (bundle != null) {
+            favorites = bundle.getBoolean(FAVORITE_LIST_KEY);
         }
     }
 
@@ -72,10 +77,12 @@ public class NeighbourFragment extends Fragment {
      * Init the favorite neighbours list and the List of all neighbours
      */
     private void initList() {
-        if (favoriteList) mNeighbours = mApiService.getFavoriteNeighbours();
-        else mNeighbours = mApiService.getNeighbours();
-            mRecyclerView.setAdapter(new MyNeighbourRecyclerViewAdapter(mNeighbours));
-        }
+    if (favorites)
+        mNeighbours = mApiService.getFavoriteNeighbours();
+    else
+        mNeighbours = mApiService.getNeighbours();
+        mRecyclerView.setAdapter(new MyNeighbourRecyclerViewAdapter(mNeighbours, favorites));
+    }
 
     @Override
     public void onResume() {
@@ -97,6 +104,7 @@ public class NeighbourFragment extends Fragment {
 
     /**
      * Fired if the user clicks on a delete button
+     *
      * @param event
      */
     @Subscribe
@@ -104,5 +112,5 @@ public class NeighbourFragment extends Fragment {
         mApiService.deleteNeighbour(event.neighbour);
         initList();
     }
-
 }
+

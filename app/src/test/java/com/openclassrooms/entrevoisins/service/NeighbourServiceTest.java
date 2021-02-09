@@ -2,9 +2,7 @@ package com.openclassrooms.entrevoisins.service;
 
 import com.openclassrooms.entrevoisins.di.DI;
 import com.openclassrooms.entrevoisins.model.Neighbour;
-import com.openclassrooms.entrevoisins.ui.neighbour_list.ListNeighbourActivity;
-import com.openclassrooms.entrevoisins.ui.neighbour_list.NeighbourFragment;
-import com.openclassrooms.entrevoisins.ui.neighbour_list.NeighbourProfileActivity;
+
 
 import org.hamcrest.collection.IsIterableContainingInAnyOrder;
 import org.junit.Before;
@@ -12,12 +10,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -27,9 +23,7 @@ import static org.junit.Assert.assertThat;
 public class NeighbourServiceTest {
 
     private NeighbourApiService service;
-    NeighbourProfileActivity neighbourProfileActivity;
-    NeighbourProfileActivity mName;
-    private List<Neighbour> mNeighbours;
+
 
     @Before
     public void setup() {
@@ -52,26 +46,23 @@ public class NeighbourServiceTest {
 
     @Test
     public void getFavoriteNeighboursListWithSuccess() {
-        List<Neighbour> favoriteNeighboursList = new ArrayList<>();
-        List<Neighbour> neighbours = service.getFavoriteNeighbours();
-        List<Neighbour> expectedFavoriteNeighbours = favoriteNeighboursList;
-        assertThat(neighbours, IsIterableContainingInAnyOrder.containsInAnyOrder(expectedFavoriteNeighbours.toArray()));
+        service.getFavoriteNeighbours().clear();
+        service.getNeighbours().get(0).setFavorite(true);
+        service.getNeighbours().get(3).setFavorite(true);
+        List<Neighbour> favoriteNeighboursList = service.getFavoriteNeighbours();
+        assertFalse(favoriteNeighboursList.isEmpty());
+        assertEquals(2,favoriteNeighboursList.size());
     }
 
     @Test
-    public void getProfilePageWithSuccess() {
-        assertNotNull(neighbourProfileActivity);
-    }
-
-    @Test
-    public void getNameInNeighbourProfileActivity() {
-        assertNotNull(mName);
-    }
-
-    @Test
-    public void getCorrectNameForCorrectNeighbour() {
-        Neighbour neighbour = mNeighbours.get(0);
-        assertEquals("Caroline", neighbour.getName());
+    public void removeFavoriteNeighbourWithSuccess() {
+        service.getFavoriteNeighbours().clear();
+        service.getNeighbours().get(0).setFavorite(true);
+        service.getNeighbours().get(3).setFavorite(true);
+        assertEquals(2,service.getFavoriteNeighbours().size());
+        service.getNeighbours().get(0).setFavorite(false);
+        assertEquals(1,service.getFavoriteNeighbours().size());
+        assertEquals(service.getNeighbours().get(3),service.getFavoriteNeighbours().get(0));
     }
 
 }

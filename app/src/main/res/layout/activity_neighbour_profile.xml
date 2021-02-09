@@ -6,40 +6,45 @@
     android:layout_height="match_parent"
     tools:context=".ui.neighbour_list.NeighbourProfileActivity">
 
-    <android.support.design.widget.CollapsingToolbarLayout
-        android:id="@+id/toolbar_layout"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:fitsSystemWindows="true"
-        app:contentScrim="@android:color/transparent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_scrollFlags="scroll|exitUntilCollapsed"
-        app:toolbarId="@+id/toolbar">
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@android:color/transparent"
-            app:layout_collapseMode="pin"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
-
-    </android.support.design.widget.CollapsingToolbarLayout>
-
-    <ImageView
-        android:id="@+id/avatarUrlProfile"
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
         android:layout_width="0dp"
         android:layout_height="320dp"
-        android:layout_marginBottom="411dp"
-        android:scaleType="centerCrop"
-        app:layout_constraintBottom_toBottomOf="@+id/toolbar_layout"
+        android:background="@android:color/transparent"
+        android:fitsSystemWindows="true"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout5"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/toolbarlayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            app:contentScrim="@android:color/transparent"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:toolbarId="@+id/toolbar">
+
+            <ImageView
+                android:id="@+id/avatarUrlProfile"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#fff"
+                android:gravity="center_vertical"
+                android:scaleType="fitXY"
+                android:adjustViewBounds="false"/>
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@android:color/transparent"
+                app:layout_collapseMode="pin"
+                app:popupTheme="@style/AppTheme.PopupOverlay"/>
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
 
     <TextView
         android:id="@+id/nameTitle"
@@ -50,8 +55,7 @@
         android:background="@android:color/transparent"
         android:textColor="#FFEBEE"
         android:textSize="40dp"
-        app:layout_anchor="@id/avatarUrlProfile"
-        app:layout_anchorGravity="bottom|end"
+        app:layout_anchor="@id/appbar"
         app:layout_constraintBottom_toTopOf="@+id/item_favorite_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/linearLayout5" />
@@ -60,17 +64,15 @@
         android:id="@+id/item_favorite_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
         android:layout_marginRight="16dp"
-        app:layout_anchor="@id/avatarUrlProfile"
-        app:layout_anchorGravity="bottom|end"
-        app:layout_constraintBottom_toBottomOf="@+id/avatarUrlProfile"
-        app:layout_constraintEnd_toEndOf="@+id/toolbar_layout"
-        app:layout_constraintTop_toBottomOf="@+id/avatarUrlProfile"
-        app:layout_constraintVertical_bias="1.0"
-        app:srcCompat="@drawable/ic_baseline_star_yellow_border_24"
+        android:background="@android:color/transparent"
         android:backgroundTint="#FCFCFC"
-        app:borderWidth="0dp"/>
+        app:borderWidth="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/appbar"
+        app:layout_constraintEnd_toEndOf="@+id/appbar"
+        app:layout_constraintTop_toBottomOf="@+id/appbar"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@drawable/ic_baseline_star_yellow_border_24" />
 
     <LinearLayout
         android:id="@+id/linearLayout5"
@@ -80,7 +82,7 @@
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/avatarUrlProfile"
+        app:layout_constraintTop_toBottomOf="@+id/appbar"
         app:layout_constraintVertical_bias="1.0">
 
         <android.support.v7.widget.CardView
@@ -201,7 +203,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:padding="@dimen/activity_vertical_margin"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -211,7 +212,7 @@
                     android:id="@+id/à_propos_de_moi"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="@dimen/text_margin"
+                    android:layout_marginLeft="10dp"
                     android:text="A propos de moi"
                     android:textSize="30dp" />
 
@@ -228,7 +229,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:layout_marginRight="@dimen/text_margin" />
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="10dp"/>
 
             </LinearLayout>
         </android.support.v7.widget.CardView>
