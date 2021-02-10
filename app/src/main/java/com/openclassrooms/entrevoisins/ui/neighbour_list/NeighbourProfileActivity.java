@@ -59,6 +59,7 @@ public class NeighbourProfileActivity extends AppCompatActivity {
         // on recupère l'intent envoyer de la liste des voisins
         Intent neighbourProfileActivityIntent = getIntent();
 
+
         // cette methode initialise la vue du voisin
         initView(neighbourProfileActivityIntent);
 
