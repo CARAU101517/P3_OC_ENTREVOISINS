@@ -47,6 +47,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayingAtL
 import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
 import static android.support.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withParent;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.openclassrooms.entrevoisins.R.id.gone;
 import static com.openclassrooms.entrevoisins.R.id.item_list_delete_button;
@@ -129,33 +130,124 @@ public class NeighboursListTest {
 
     @Test
     public void FavoriteNeighboursList_MustShowOnlyFavorites() {
-        onView(allOf(withId(R.id.list_neighbours), isDisplayingAtLeast(60)))
-            .perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
-        ViewInteraction floatingActionButton = onView(allOf(withId(R.id.item_favorite_button),
-                        childAtPosition(childAtPosition(withId(android.R.id.content), 0),3), isDisplayed()));
-        floatingActionButton.perform(click());
-        pressBack();
+        ViewInteraction recyclerView = onView(
+                allOf(withId(R.id.list_neighbours),
+                        isDisplayingAtLeast(60)));
+        recyclerView.perform(actionOnItemAtPosition(0, click()));
 
-        ViewInteraction recyclerView2 = onView(allOf(withId(R.id.list_neighbours), isDisplayingAtLeast(60)));
-        recyclerView2.perform(actionOnItemAtPosition(2, click()));
-        ViewInteraction floatingActionButton2 = onView(allOf(withId(R.id.item_favorite_button), childAtPosition(
-                        childAtPosition(withId(android.R.id.content), 0), 3), isDisplayed()));
+
+        ViewInteraction floatingActionButton = onView(
+                allOf(withId(R.id.item_favorite_button),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                2),
+                        isDisplayed()));
+        floatingActionButton.perform(click());
+
+        ViewInteraction floatingActionButton2 = onView(
+                allOf(withId(R.id.item_favorite_button),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                2),
+                        isDisplayed()));
         floatingActionButton2.perform(click());
-        pressBack();
+
+        ViewInteraction appCompatImageButton = onView(
+                allOf(withContentDescription("Navigate up"), isDisplayingAtLeast(60),
+                        childAtPosition(
+                                allOf(withId(R.id.toolbar),
+                                        childAtPosition(
+                                                withId(R.id.toolbarlayout),
+                                                1)),
+                                0),
+                        isDisplayed()));
+        appCompatImageButton.perform(click());
 
         ViewInteraction tabView = onView(
-                allOf(withContentDescription("Favorites"), childAtPosition(
-                        childAtPosition(withId(R.id.tabs), 0), 1), isDisplayed()));
+                allOf(withContentDescription("Favorites"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.tabs),
+                                        0),
+                                1),
+                        isDisplayed()));
         tabView.perform(click());
 
-        ViewInteraction viewPager = onView(allOf(withId(R.id.container), childAtPosition(allOf(withId(R.id.main_content),
-                        childAtPosition(withId(android.R.id.content), 0)), 1), isDisplayed()));
+        ViewInteraction viewPager = onView(
+                allOf(withId(R.id.container), isDisplayingAtLeast(60),
+                        childAtPosition(
+                                allOf(withId(R.id.main_content),
+                                        childAtPosition(
+                                                withId(android.R.id.content),
+                                                0)),
+                                1),
+                        isDisplayed()));
         viewPager.perform(swipeLeft());
 
         ViewInteraction recyclerView3 = onView(allOf(withId(R.id.list_neighbours), isDisplayingAtLeast(60)));
-        recyclerView3.check(withItemCount(2));
+        recyclerView3.check(withItemCount(1));
+
     }
 
+    @Test
+    public void deleteButtonNotDisplayedInFavoriteList() {
+        ViewInteraction recyclerView = onView(
+                allOf(withId(R.id.list_neighbours),
+                         isDisplayingAtLeast(60)));
+        recyclerView.perform(actionOnItemAtPosition(0, click()));
+
+        ViewInteraction floatingActionButton = onView(
+                allOf(withId(R.id.item_favorite_button), isDisplayingAtLeast(60),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                2),
+                        isDisplayed()));
+        floatingActionButton.perform(click());
+
+        ViewInteraction appCompatImageButton = onView(
+                allOf(withContentDescription("Navigate up"), isDisplayingAtLeast(60),
+                        childAtPosition(
+                                allOf(withId(R.id.toolbar),
+                                        childAtPosition(
+                                                withId(R.id.toolbarlayout),
+                                                1)),
+                                0),
+                        isDisplayed()));
+        appCompatImageButton.perform(click());
+
+        ViewInteraction tabView = onView(
+                allOf(withContentDescription("Favorites"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.tabs),
+                                        0),
+                                1),
+                        isDisplayed()));
+        tabView.perform(click());
+
+        ViewInteraction viewPager = onView(
+                allOf(withId(R.id.container), isDisplayingAtLeast(60),
+                        childAtPosition(
+                                allOf(withId(R.id.main_content),
+                                        childAtPosition(
+                                                withId(android.R.id.content),
+                                                0)),
+                                1),
+                        isDisplayed()));
+        viewPager.perform(swipeLeft());
+
+        ViewInteraction imageView = onView(
+                allOf(withId(R.id.item_list_delete_button), isDisplayingAtLeast(60),
+                        withParent(withParent(withId(R.id.list_neighbours)))));
+        imageView.check(doesNotExist());
+
+    }
 
     private static Matcher<View> childAtPosition(
             final Matcher<View> parentMatcher, final int position) {
