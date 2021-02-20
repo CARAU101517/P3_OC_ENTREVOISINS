@@ -59,7 +59,12 @@ public class DummyNeighbourApiService implements  NeighbourApiService {
      */
     @Override
     public void modifyNeighbour(Neighbour neighbour) {
-        neighbours.set(neighbours.indexOf(neighbour), neighbour);
+        for (Neighbour neighbour1 :getNeighbours()){
+            if (neighbour1.getId() == neighbour.getId()) {
+                neighbour1.setFavorite(!neighbour1.getFavorite());
+            }
+        }
+
     }
 
 }

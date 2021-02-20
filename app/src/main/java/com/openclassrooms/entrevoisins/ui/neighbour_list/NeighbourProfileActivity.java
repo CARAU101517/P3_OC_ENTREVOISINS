@@ -69,11 +69,11 @@ public class NeighbourProfileActivity extends AppCompatActivity {
                 if (neighbourProfile.getFavorite()) {
                     mFavoriteButton.setImageResource(R.drawable.ic_baseline_star_yellow_border_24);
                     //saveFavStatus(false)= modifyNeighbour;;
-                    neighbourProfile.setFavorite(false);
+                    //neighbourProfile.setFavorite(false);
                 } else {
                     mFavoriteButton.setImageResource(R.drawable.ic_baseline_yellow_star_24);
                     //saveFavStatus(true) = modifyNeighbour;
-                    neighbourProfile.setFavorite(true);
+                    //neighbourProfile.setFavorite(true);
                 }
                 mApiService.modifyNeighbour(neighbourProfile);
             }
